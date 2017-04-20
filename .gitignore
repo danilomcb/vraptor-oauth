@@ -1,0 +1,20 @@
+/.idea
+*.class
+.DS_Store
+.metadata
+.settings
+.classpath
+.project
+.backup
+target/
+/target/
+/classes
+/.externalToolBuilders/
+/bin/
+
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+/logs/
