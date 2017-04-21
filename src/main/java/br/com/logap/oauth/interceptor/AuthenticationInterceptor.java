@@ -15,13 +15,20 @@ import javax.servlet.http.HttpServletRequest;
  * Created by danilo-barros on 20/04/17.
  */
 @Interceptor
-@CheckToken
+@PrivateAccess
 public class AuthenticationInterceptor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticationInterceptor.class);
 
     private final TokenValidation tokenValidation;
     private final HttpServletRequest httpRequest;
+
+    /**
+     * @deprecated CDI eyes only.
+     */
+    public AuthenticationInterceptor() {
+        this(null, null);
+    }
 
     @Inject
     public AuthenticationInterceptor(TokenValidation tokenValidation, HttpServletRequest httpRequest) {
@@ -31,13 +38,13 @@ public class AuthenticationInterceptor {
 
     @AroundInvoke
     public Object check(InvocationContext ctx) throws Exception {
-        this.validarToken();
+        LOGGER.debug("Validating token.");
+        this.validateToken();
         return ctx.proceed();
     }
 
-    private void validarToken() throws InvalidAuthenticationException {
-        LOGGER.debug("Validando token.");
-        tokenValidation.validToken(httpRequest);
-        LOGGER.debug("Token validado com sucesso.");
+    private void validateToken() throws InvalidAuthenticationException {
+        tokenValidation.validate(httpRequest);
+        LOGGER.debug("Token validated successfully.");
     }
 }

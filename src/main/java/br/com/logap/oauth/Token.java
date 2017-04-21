@@ -4,19 +4,12 @@ public class Token {
 	
 	private final String token;
 	
-	private final AuthenticationUser authenticationUser;
-	
-	public Token(String token, AuthenticationUser authenticationUser) {
+	public Token(String token) {
 		this.token = token;
-		this.authenticationUser = authenticationUser;
 	}
 
 	public String getToken() {
 		return token;
-	}
-
-	public AuthenticationUser getAuthenticationUser() {
-		return authenticationUser;
 	}
 
 }

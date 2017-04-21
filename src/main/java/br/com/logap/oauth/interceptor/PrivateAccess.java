@@ -9,5 +9,5 @@ import java.lang.annotation.Target;
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface CheckToken {
+public @interface PrivateAccess {
 }

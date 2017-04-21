@@ -6,55 +6,48 @@ import net.sf.ehcache.Element;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * 
- * @author LogAp
- *
- * @param <K>
- * @param <V>
- */
 public class TemporaryCacheForChange<K, V> implements Cache<K, V> {
 
     private final Ehcache cache;
 
-	public static TemporaryCacheForChange create(String nome, int tempoVidaDesdeUltimaMudanca, int maxRegistroHeap, int maxRegistroDisco) {
-        return new TemporaryCacheForChange(nome, false, 0,tempoVidaDesdeUltimaMudanca, maxRegistroHeap, maxRegistroDisco);
+    static TemporaryCacheForChange create(int lifeTimeSinceLastChange, int maxRecordsHeap, int maxRecordsDisk) {
+        return new TemporaryCacheForChange("cacheTokens", false, 0, lifeTimeSinceLastChange, maxRecordsHeap, maxRecordsDisk);
     }
 
-    private TemporaryCacheForChange(String nome, boolean eterno, int tempoVidaSegundos, int tempoVidaDesdeUltimaMudanca, int maxRegistroHeap, int maxRegistroDisco) {
-        cache = EHCacheUtil.getCache(nome, eterno, tempoVidaSegundos, tempoVidaDesdeUltimaMudanca, maxRegistroHeap, maxRegistroDisco);
-    }
-
-    @Override
-    public void insert(K chave, V valor) {
-        getCache().put(new Element(chave, valor));
+    private TemporaryCacheForChange(String name, boolean eternal, int lifeTimeSeconds, int lifeTimeSinceLastChange, int maxRecordsHeap, int maxRecordsDisk) {
+        cache = EHCacheUtil.getCache(name, eternal, lifeTimeSeconds, lifeTimeSinceLastChange, maxRecordsHeap, maxRecordsDisk);
     }
 
     @Override
-    public V getToken(K chave){
-    	return (V) getCache().get(chave).getObjectValue();
+    public void insert(K key, V value) {
+        getCache().put(new Element(key, value));
     }
 
     @Override
-    public boolean containsKey(K chave) {
-        return getCache().isKeyInCache(chave);
+    public V getToken(K key) {
+        return (V) getCache().get(key).getObjectValue();
     }
-    
+
     @Override
-	public boolean removeToken(K chave) {
-		return getCache().remove(chave);
-	}
-    
+    public boolean containsKey(K key) {
+        return getCache().isKeyInCache(key);
+    }
+
     @Override
-    public boolean containsToken(K chave) {
-        return getCache().get(chave) != null;
+    public boolean removeToken(K key) {
+        return getCache().remove(key);
+    }
+
+    @Override
+    public boolean containsToken(K key) {
+        return getCache().get(key) != null;
     }
 
     private Ehcache getCache() {
         return cache;
     }
 
-	@Override
+    @Override
     public Set<K> getKeys() {
         return new HashSet<>(cache.getKeys());
     }

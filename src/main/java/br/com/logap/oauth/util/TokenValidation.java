@@ -1,6 +1,5 @@
 package br.com.logap.oauth.util;
 
-import br.com.logap.oauth.Token;
 import br.com.logap.oauth.exception.InvalidAuthenticationException;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -21,7 +20,7 @@ public class TokenValidation {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(TokenValidation.class);
 	
-    private final TokenManager tokenManager;
+    private final TokenManagerService tokenManagerService;
 
 	/**
 	 * @deprecated CDI eyes only.
@@ -31,23 +30,26 @@ public class TokenValidation {
 	}
 
 	@Inject
-	public TokenValidation(TokenManager tokenManager) {
-		this.tokenManager = tokenManager;
+	public TokenValidation(TokenManagerService tokenManagerService) {
+		this.tokenManagerService = tokenManagerService;
 	}
 
-	public Token validToken(HttpServletRequest request) throws InvalidAuthenticationException {
+	public void validate(HttpServletRequest request) throws InvalidAuthenticationException {
 		OAuthAccessResourceRequest oauthRequest;
 		try {
 			oauthRequest = new OAuthAccessResourceRequest(request, ParameterStyle.HEADER);
 			String accessToken = oauthRequest.getAccessToken();
-			
-			if (!tokenManager.isValidToken(accessToken)) {
+
+			if (!tokenManagerService.isValidToken(accessToken)) {
+				LOGGER.debug("Invalid token {}", accessToken);
 				throw new InvalidAuthenticationException();
 			}
-			
-			return tokenManager.getToken(accessToken);
+
 		} catch (OAuthSystemException | OAuthProblemException e) {
+			LOGGER.error("Error validating token.", e);
 			throw new InvalidAuthenticationException();
 		}
 	}
+
+
 }
