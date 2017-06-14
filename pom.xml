@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <slf4j.version>1.7.3</slf4j.version>
-        <version.oltu>1.0.0</version.oltu>
+        <version.oltu>1.0.2</version.oltu>
         <deltaspike.version>1.4.0</deltaspike.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     </properties>
@@ -97,6 +97,20 @@
             <artifactId>org.apache.oltu.oauth2.client</artifactId>
             <version>${version.oltu}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.oltu.oauth2</groupId>
+            <artifactId>org.apache.oltu.oauth2.jwt</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.oltu.jose</groupId>
+            <artifactId>org.apache.oltu.jose.jws</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+
+
     </dependencies>
 
     <build>

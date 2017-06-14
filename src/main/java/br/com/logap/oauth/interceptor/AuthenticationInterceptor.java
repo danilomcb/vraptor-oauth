@@ -38,13 +38,13 @@ public class AuthenticationInterceptor {
 
     @AroundInvoke
     public Object check(InvocationContext ctx) throws Exception {
-        LOGGER.debug("Validating token.");
+        LOGGER.trace("Validating token.");
         this.validateToken();
         return ctx.proceed();
     }
 
     private void validateToken() throws InvalidAuthenticationException {
         tokenValidation.validate(httpRequest);
-        LOGGER.debug("Token validated successfully.");
+        LOGGER.trace("Token validated successfully.");
     }
 }

@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  *
@@ -42,16 +43,37 @@ public class TokenManager implements Serializable {
         this.configurationCache = configurationCache;
     }
 
+    public String generateAuthenticationToken(Map<String ,String> param) {
+        try {
+            OAuthIssuer oauthIssuer = new OAuthIssuerImpl(new MD5Generator());
+            final String accessToken = oauthIssuer.accessToken();
+            tokenManagerService.addToken(accessToken);
+
+            final OAuthASResponse.OAuthTokenResponseBuilder oAuthTokenResponseBuilder = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK)
+                    .setAccessToken(accessToken)
+                    .setExpiresIn(Long.toString(configurationCache.getTokenLifeTime()));
+
+            for (Map.Entry<String, String> entry : param.entrySet()) {
+                oAuthTokenResponseBuilder.setParam(entry.getKey(), entry.getValue());
+            }
+
+            final OAuthResponse response = oAuthTokenResponseBuilder.buildJSONMessage();
+
+            return response.getBody();
+        } catch (OAuthSystemException e) {
+            throw new IncorrectParametersAuthenticationException();
+        }
+    }
+
     public String generateAuthenticationToken() {
         try {
             OAuthIssuer oauthIssuer = new OAuthIssuerImpl(new MD5Generator());
             final String accessToken = oauthIssuer.accessToken();
             tokenManagerService.addToken(accessToken);
 
-            OAuthResponse response = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK)
+            final OAuthResponse response = OAuthASResponse.tokenResponse(HttpServletResponse.SC_OK)
                     .setAccessToken(accessToken)
-                    .setExpiresIn(Long.toString(configurationCache.getTokenLifeTime()))
-                    .buildJSONMessage();
+                    .setExpiresIn(Long.toString(configurationCache.getTokenLifeTime())).buildJSONMessage();
 
             return response.getBody();
         } catch (OAuthSystemException e) {
