@@ -113,6 +113,20 @@
 
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>LogAp Releases</name>
+            <url>http://10.7.193.131:8081/nexus/content/repositories/releases/</url>
+        </repository>
+
+        <snapshotRepository>
+            <id>logap-snapshots</id>
+            <name>LogAp Snapshots</name>
+            <url>http://10.7.193.131:8081/nexus/content/repositories/logap-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <finalName>vraptor-oauth</finalName>
         <plugins>
