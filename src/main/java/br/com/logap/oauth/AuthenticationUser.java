@@ -1,20 +1,10 @@
 package br.com.logap.oauth;
 
-public class AuthenticationUser {
+public interface AuthenticationUser {
 
-	private final String login;
-	private final String password;
+	String getPassword();
 
-	public AuthenticationUser(String login, String password) {
-		this.login = login;
-		this.password = password;
-	}
+	Long getId();
 
-	public String getPassword() {
-		return password;
-	}
-
-	public String getLogin() {
-		return login;
-	}
+	String getLogin();
 }

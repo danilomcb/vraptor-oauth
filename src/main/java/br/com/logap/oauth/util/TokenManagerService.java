@@ -1,6 +1,7 @@
 package br.com.logap.oauth.util;
 
-import br.com.logap.oauth.Token;
+import br.com.logap.oauth.AuthenticationUser;
+import br.com.logap.oauth.AuthenticationUserToken;
 import br.com.logap.oauth.cache.CacheTokenFactory;
 import br.com.logap.oauth.exception.IncorrectParametersAuthenticationException;
 import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
@@ -36,9 +37,14 @@ public class TokenManagerService {
         this.httpServletRequest = httpServletRequest;
     }
 
-    void addToken(String token) {
-        Token tokenSalvar = new Token(token);
+    void addToken(String token, AuthenticationUser user) {
+        AuthenticationUserToken tokenSalvar = new AuthenticationUserToken(token, user);
         cacheTokenFactory.getCache().insert(token, tokenSalvar);
+    }
+
+    AuthenticationUser getUserByToken(String token) {
+        final AuthenticationUserToken tokenEncontrado = cacheTokenFactory.getCache().getToken(token);
+        return tokenEncontrado.getUser();
     }
 
     boolean isValidToken(String token) {
